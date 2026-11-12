@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Code Knowledge Engine | Prashant Jalan</title>
+<meta name="description" content="Analysts and AI agents needed fast, precise answers about how 150+ systems handle data. I built a search layer that answers with evidence.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,700;0,800;1,500&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Caveat:wght@600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="site-name" href="/">Prashant Jalan<span>Business Data Analyst</span></a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="/projects.html" aria-current="page">Work</a>
+      <a href="/dashboard.html">Dashboard</a>
+      <a href="/cooking.html">Cooking</a>
+      <a href="/about.html">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="page-head narrow">
+    <p class="crumb"><a href="/projects.html#ai-projects">All Projects</a></p>
+    <h1>Code Knowledge Engine for 150+ Repositories</h1>
+    <p class="intro">Analysts and AI agents needed fast, precise answers about how 150+ systems handle data. I built a search layer that answers with evidence.</p>
+    <ul class="chips"><li>Python</li><li>SQLite FTS5</li><li>Embeddings</li><li>REST API</li><li>CLI</li></ul>
+  </div>
+  <article class="card story narrow">
+<h2>The Problem</h2>
+<p>Analysts and AI coding agents needed to answer questions like &ldquo;which service writes this field?&rdquo; or &ldquo;who consumes this message stream?&rdquo; across 150+ repositories in Java, Scala, Python and SQL. Grepping raw clones was slow and noisy, and it burned a lot of LLM context, because every search returned hundreds of irrelevant lines.</p>
+<h2>What I Built</h2>
+<p>A lightweight, self-hosted code knowledge service that indexes every repository once and answers questions precisely:</p>
+<ul>
+<li><strong>Hybrid search</strong>: full-text (FTS5) for exact names, plus semantic search for concepts (&ldquo;where is margin netted?&rdquo;).</li>
+<li><strong>Structural lookups</strong>: find a function or class by name, including abstract, static, interface and enum declarations.</li>
+<li><strong>Write-site index</strong>: records every place a field is assigned, including the operator, the enclosing branch condition, builder-pattern setters and callers. &ldquo;Where is X set?&rdquo; returns file:line evidence instead of a guess.</li>
+<li><strong>Message-stream reference index</strong>: resolves producer and consumer code for each stream topic. When a topic can&rsquo;t be resolved, it is marked <em>unresolved</em> or <em>ambiguous</em> instead of guessed.</li>
+<li><strong>Delta indexing</strong> by git blob hash, so refreshes only touch changed files. A health check catches empty or stale indexes.</li>
+</ul>
+<figure class="diagram"><pre class="mermaid">
+flowchart LR
+  R[150+ git repos] --&gt;|delta by blob hash| I[Indexer]
+  I --&gt; F[(FTS5 + embeddings)]
+  I --&gt; W[(Write-site &amp; topic-ref index)]
+  F &amp; W --&gt; A[REST API / CLI]
+  A --&gt; U[Analysts &amp; AI agents]
+</pre></figure>
+<h2>Why This Approach</h2>
+<p>I picked SQLite over a hosted vector database because it has zero infrastructure, is portable and is fast enough. Extraction patterns are stored as data, not code, so supporting a new framework idiom means adding a pattern instead of rewriting the logic. The design rule was &ldquo;never guess&rdquo;: every answer has to point to a line of code.</p>
+<h2>Outcomes</h2>
+<div class="outcomes"><ul>
+<li>Cut LLM token use for code questions by <strong>10 to 100 times</strong> compared with raw grep.</li>
+<li>Became the default code-search layer for all lineage and impact-analysis work in the workspace.</li>
+<li>Found and fixed a subtle index-integrity bug (chunk hashes ignored the repository, so re-indexing one repo silently emptied another). Added a health check that now runs after every bulk index.</li>
+</ul></div>
+<h2>Lessons</h2>
+<p>Precision beats recall for tooling that AI agents rely on. An honest &ldquo;unresolved&rdquo; is worth more than a confident wrong answer.</p>
+  </article>
+  <nav class="pager narrow" aria-label="More projects">
+    <a href="/projects/glossary-term-assignment.html"><span>Previous Project</span><strong>Business-Glossary Term Assignment</strong></a>
+    <a class="next" href="/projects/ai-agent-workspace.html"><span>Next Project</span><strong>Reliable AI-Agent Workspace</strong></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="card">
+      <div>
+        <h2>Let’s Talk</h2>
+        <p>I’m open to client-facing analyst roles, and always glad to talk about data, AI or food.</p>
+      </div>
+      <a class="btn" href="https://www.linkedin.com/in/prashantjalan8">Message me on LinkedIn</a>
+    </div>
+  </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script>
+(function () {
+  var s = getComputedStyle(document.documentElement);
+  function v(n) { return s.getPropertyValue(n).trim(); }
+  mermaid.initialize({
+    startOnLoad: true, theme: "base", securityLevel: "strict",
+    flowchart: { curve: "basis", useMaxWidth: true, padding: 14 },
+    themeVariables: {
+      fontFamily: '"Alegreya Sans", Arial, sans-serif', fontSize: "17px",
+      primaryColor: v("--card"), primaryTextColor: v("--ink"), primaryBorderColor: v("--green"),
+      lineColor: v("--muted"), secondaryColor: v("--card"), tertiaryColor: v("--card"),
+      background: v("--panel"), edgeLabelBackground: v("--panel"), textColor: v("--text")
+    }
+  });
+})();
+</script>
+</body>
+</html>

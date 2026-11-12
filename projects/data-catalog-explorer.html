@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Data Catalog Explorer | Prashant Jalan</title>
+<meta name="description" content="The governance team answered everyday questions with a dozen scripts and spreadsheets. I gave them one app built around the questions they actually ask.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,700;0,800;1,500&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Caveat:wght@600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="site-name" href="/">Prashant Jalan<span>Business Data Analyst</span></a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="/projects.html" aria-current="page">Work</a>
+      <a href="/dashboard.html">Dashboard</a>
+      <a href="/cooking.html">Cooking</a>
+      <a href="/about.html">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="page-head narrow">
+    <p class="crumb"><a href="/projects.html#ai-projects">All Projects</a></p>
+    <h1>Data Catalog Explorer: a Governance &ldquo;Super-App&rdquo;</h1>
+    <p class="intro">The governance team answered everyday questions with a dozen scripts and spreadsheets. I gave them one app built around the questions they actually ask.</p>
+    <ul class="chips"><li>Python</li><li>Flask</li><li>React 18</li><li>Vite</li><li>DuckDB</li><li>Gunicorn</li><li>Monaco editor</li><li>JWT/OIDC</li></ul>
+  </div>
+  <article class="card story narrow">
+<h2>The Problem</h2>
+<p>The enterprise data catalog held hundreds of thousands of assets and millions of attributes and relations, but the vendor UI made cross-cutting questions slow to answer. For example: which fields have no business term, which data streams have drifted from their schema, or what feeds a given table. The data governance team was using about a dozen separate scripts and spreadsheets to answer them.</p>
+<h2>What I Built</h2>
+<p>One Flask backend serving a React single-page app that brings together about ten tools:</p>
+<ul>
+<li><strong>Landing dashboard</strong>: coverage KPIs by asset type and application, with click-through drill-downs.</li>
+<li><strong>SQL IDE</strong>: Monaco editor, schema tree and query history over a local catalog snapshot.</li>
+<li><strong>Schema-vs-catalog comparisons</strong>: message schemas and OpenAPI specs compared against what the catalog records.</li>
+<li><strong>Asset mind map and lineage view</strong>: click to expand any asset&rsquo;s relations and recorded field mappings.</li>
+<li><strong>Data availability explorer</strong>: table context, columns, samples, record counts and data quality rule runs.</li>
+<li><strong>DQ job manager and admin panel</strong>: snapshot upload, health monitoring, signed-in identity.</li>
+</ul>
+<figure class="diagram"><pre class="mermaid">
+flowchart LR
+  S[Catalog export] --&gt; D[(DuckDB snapshot)]
+  D --&gt; B[Flask API&lt;br/&gt;one module per sub-app]
+  B --&gt; UI[React SPA&lt;br/&gt;shared header, router, theme]
+  UI --&gt; T[Governance team]
+</pre></figure>
+<h2>Why This Approach</h2>
+<p>Queries run against a local DuckDB snapshot instead of the live catalog API, which makes them sub-second and puts no load on production. Each sub-app is a self-contained backend module with its own React page, so tools can be added without touching the others. Navigation and app metadata are defined in one place.</p>
+<h2>Outcomes</h2>
+<div class="outcomes"><ul>
+<li>Replaced a collection of ad hoc scripts with one deployed, authenticated app.</li>
+<li>Questions that used to take hours of spreadsheet work now take seconds.</li>
+<li>Backed by unit tests, invariant evals and a headless-browser smoke test that runs before each release.</li>
+</ul></div>
+<h2>Lessons</h2>
+<p>A unified UI matters as much as features. Restyling every tool onto one shared design system made the suite feel like a single product, and adoption went up.</p>
+  </article>
+  <nav class="pager narrow" aria-label="More projects">
+    <a href="/projects/dq-rule-generation.html"><span>Previous Project</span><strong>Lineage-Driven Data Quality Rule Generation</strong></a>
+    <a class="next" href="/projects/versioned-data-catalog-warehouse.html"><span>Next Project</span><strong>Versioned Data Catalog Warehouse</strong></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="card">
+      <div>
+        <h2>Let’s Talk</h2>
+        <p>I’m open to client-facing analyst roles, and always glad to talk about data, AI or food.</p>
+      </div>
+      <a class="btn" href="https://www.linkedin.com/in/prashantjalan8">Message me on LinkedIn</a>
+    </div>
+  </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script>
+(function () {
+  var s = getComputedStyle(document.documentElement);
+  function v(n) { return s.getPropertyValue(n).trim(); }
+  mermaid.initialize({
+    startOnLoad: true, theme: "base", securityLevel: "strict",
+    flowchart: { curve: "basis", useMaxWidth: true, padding: 14 },
+    themeVariables: {
+      fontFamily: '"Alegreya Sans", Arial, sans-serif', fontSize: "17px",
+      primaryColor: v("--card"), primaryTextColor: v("--ink"), primaryBorderColor: v("--green"),
+      lineColor: v("--muted"), secondaryColor: v("--card"), tertiaryColor: v("--card"),
+      background: v("--panel"), edgeLabelBackground: v("--panel"), textColor: v("--text")
+    }
+  });
+})();
+</script>
+</body>
+</html>

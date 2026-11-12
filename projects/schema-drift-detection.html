@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Schema-vs-Catalog Drift Detection | Prashant Jalan</title>
+<meta name="description" content="Nobody knew how far the catalog had drifted from reality. I made the gap measurable and repeatable for the governance team.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,700;0,800;1,500&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Caveat:wght@600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="site-name" href="/">Prashant Jalan<span>Business Data Analyst</span></a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="/projects.html" aria-current="page">Work</a>
+      <a href="/dashboard.html">Dashboard</a>
+      <a href="/cooking.html">Cooking</a>
+      <a href="/about.html">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="page-head narrow">
+    <p class="crumb"><a href="/projects.html#ai-projects">All Projects</a></p>
+    <h1>Schema-vs-Catalog Drift Detection (CDC)</h1>
+    <p class="intro">Nobody knew how far the catalog had drifted from reality. I made the gap measurable and repeatable for the governance team.</p>
+    <ul class="chips"><li>Python</li><li>Flask</li><li>JavaScript/React</li><li>SQLite</li><li>DuckDB</li><li>CSV diffing</li></ul>
+  </div>
+  <article class="card story narrow">
+<h2>The Problem</h2>
+<p>Message schemas evolve in a schema-governance repository, and the data catalog is supposed to mirror them. Over time the two drift apart: new fields go unregistered, retired fields stay in the catalog, and flags such as &ldquo;optional&rdquo; or &ldquo;deprecated&rdquo; disagree. Nobody knew how big the gap was.</p>
+<h2>What I Built</h2>
+<p>A change-data-capture comparison tool:</p>
+<ul>
+<li><strong>Extraction</strong>: pulls the latest schema metadata from the artifact repository and generates normalized CSVs for seven asset levels (schema set → topic → event → sub-message → field, and so on).</li>
+<li><strong>Comparison core</strong>: one module holds every comparison rule (shared columns, exclusions, nullable-flag handling, path and case normalization) and reports both <strong>completeness</strong> (what is missing) and <strong>accuracy</strong> (what differs).</li>
+<li><strong>UI</strong>: side-by-side diff highlighting, coverage statistics, and exports split into source-only, catalog-only and changed records.</li>
+<li><strong>Refresh and history</strong>: on-demand database refresh with backup rotation and change tracking.</li>
+</ul>
+<figure class="diagram"><pre class="mermaid">
+flowchart LR
+  A[Schema artifacts] --&gt; K[Normalized schema CSVs]
+  C[(Catalog snapshot)] --&gt; L[Normalized catalog CSVs]
+  K &amp; L --&gt; D[Comparison core&lt;br/&gt;completeness + accuracy]
+  D --&gt; U[Diff UI · stats · exports]
+</pre></figure>
+<h2>Why This Approach</h2>
+<p>Earlier versions had several comparison paths that disagreed with each other. Consolidating to <strong>one comparison path</strong> removed that whole class of bug. Invariant checks run on the delivered files themselves, which caught issues such as inconsistent boolean spellings between sources and a view that only diffed the first 5,000 rows.</p>
+<h2>Outcomes</h2>
+<div class="outcomes"><ul>
+<li>Loads and diffs datasets of 16,000 to 31,000 rows in about 7 seconds.</li>
+<li>Gave the governance team a measurable, repeatable drift report instead of guesses.</li>
+<li>Refactored hard-coded values into shared constants, verified byte-for-byte against the old output with zero behavior change.</li>
+</ul></div>
+<h2>Lessons</h2>
+<p>Read your own dashboards skeptically. Several real bugs were found just by asking why a number looked too round.</p>
+  </article>
+  <nav class="pager narrow" aria-label="More projects">
+    <a href="/projects/stream-to-table-mappings.html"><span>Previous Project</span><strong>Stream-to-Table Mapping Generator</strong></a>
+    <a class="next" href="/projects/glossary-term-assignment.html"><span>Next Project</span><strong>Business-Glossary Term Assignment</strong></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="card">
+      <div>
+        <h2>Let’s Talk</h2>
+        <p>I’m open to client-facing analyst roles, and always glad to talk about data, AI or food.</p>
+      </div>
+      <a class="btn" href="https://www.linkedin.com/in/prashantjalan8">Message me on LinkedIn</a>
+    </div>
+  </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script>
+(function () {
+  var s = getComputedStyle(document.documentElement);
+  function v(n) { return s.getPropertyValue(n).trim(); }
+  mermaid.initialize({
+    startOnLoad: true, theme: "base", securityLevel: "strict",
+    flowchart: { curve: "basis", useMaxWidth: true, padding: 14 },
+    themeVariables: {
+      fontFamily: '"Alegreya Sans", Arial, sans-serif', fontSize: "17px",
+      primaryColor: v("--card"), primaryTextColor: v("--ink"), primaryBorderColor: v("--green"),
+      lineColor: v("--muted"), secondaryColor: v("--card"), tertiaryColor: v("--card"),
+      background: v("--panel"), edgeLabelBackground: v("--panel"), textColor: v("--text")
+    }
+  });
+})();
+</script>
+</body>
+</html>

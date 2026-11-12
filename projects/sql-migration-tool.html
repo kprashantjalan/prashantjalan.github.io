@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Legacy-to-Modern SQL Migration Tool | Prashant Jalan</title>
+<meta name="description" content="A platform move meant hundreds of report queries had to be rewritten, with the mapping knowledge buried in spreadsheets. I turned those spreadsheets into an automatic converter.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,700;0,800;1,500&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Caveat:wght@600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="site-name" href="/">Prashant Jalan<span>Business Data Analyst</span></a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="/projects.html" aria-current="page">Work</a>
+      <a href="/dashboard.html">Dashboard</a>
+      <a href="/cooking.html">Cooking</a>
+      <a href="/about.html">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="page-head narrow">
+    <p class="crumb"><a href="/projects.html#ai-projects">All Projects</a></p>
+    <h1>Legacy-to-Modern SQL Migration Tool</h1>
+    <p class="intro">A platform move meant hundreds of report queries had to be rewritten, with the mapping knowledge buried in spreadsheets. I turned those spreadsheets into an automatic converter.</p>
+    <ul class="chips"><li>Python</li><li>Flask</li><li>React</li><li>SQL parsing</li><li>Trino</li><li>Mapping-driven transformation</li></ul>
+  </div>
+  <article class="card story narrow">
+<h2>The Problem</h2>
+<p>A platform modernization moved reporting from legacy DB2/Postgres warehouses to a Trino-based lakehouse. Hundreds of existing queries had to be rewritten. Table and column names changed, dialects differ, and the mapping knowledge lived in large, messy spreadsheets maintained by several teams.</p>
+<h2>What I Built</h2>
+<p>A web tool that converts a legacy query into the target dialect automatically:</p>
+<ul>
+<li><strong>Mapping ingestion</strong>: cleans thousands of spreadsheet mappings. It splits multi-value cells, rejects invalid identifiers, and filters out comment text that had leaked into expression columns.</li>
+<li><strong>Table and column translation</strong>: rewrites every reference using the mapping. When one legacy column maps to several candidates, a multi-factor score picks the best one.</li>
+<li><strong>Dialect conversion</strong>: handles date functions, casts, string functions and pagination differences.</li>
+<li><strong>Safe fallbacks</strong>: an unmapped column becomes an explicit <code>NULL AS col</code> with a note, never an invented name.</li>
+<li><strong>Browse and search UI</strong>: lets analysts inspect mappings directly.</li>
+</ul>
+<figure class="diagram"><pre class="mermaid">
+flowchart LR
+  M[Mapping spreadsheets] --&gt; N[Clean &amp; validate]
+  N --&gt; K[(Mapping store)]
+  Q[Legacy SQL] --&gt; P[Parse] --&gt; T[Translate tables/cols&lt;br/&gt;+ dialect rules]
+  K --&gt; T --&gt; O[Trino SQL + notes]
+</pre></figure>
+<h2>Why This Approach</h2>
+<p>Deterministic, mapping-driven conversion is auditable: every change can be traced to a mapping row. I validated against the mappings themselves and added a regression test for each data quality bug found in the spreadsheets.</p>
+<h2>Outcomes</h2>
+<div class="outcomes"><ul>
+<li>Query conversion that used to be manual now runs in seconds, with full coverage of the mapped SQL patterns.</li>
+<li>Deployed as a lightweight app bundle about 10x smaller than the full repository.</li>
+<li>Later reused as the refactoring engine inside a natural-language data quality assistant.</li>
+</ul></div>
+<h2>Lessons</h2>
+<p>Most migration bugs were data bugs in the mapping source, not SQL bugs. Validating inputs strictly paid off more than clever parsing.</p>
+  </article>
+  <nav class="pager narrow" aria-label="More projects">
+    <a href="/projects/ai-agent-workspace.html"><span>Previous Project</span><strong>Reliable AI-Agent Workspace</strong></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="card">
+      <div>
+        <h2>Let’s Talk</h2>
+        <p>I’m open to client-facing analyst roles, and always glad to talk about data, AI or food.</p>
+      </div>
+      <a class="btn" href="https://www.linkedin.com/in/prashantjalan8">Message me on LinkedIn</a>
+    </div>
+  </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script>
+(function () {
+  var s = getComputedStyle(document.documentElement);
+  function v(n) { return s.getPropertyValue(n).trim(); }
+  mermaid.initialize({
+    startOnLoad: true, theme: "base", securityLevel: "strict",
+    flowchart: { curve: "basis", useMaxWidth: true, padding: 14 },
+    themeVariables: {
+      fontFamily: '"Alegreya Sans", Arial, sans-serif', fontSize: "17px",
+      primaryColor: v("--card"), primaryTextColor: v("--ink"), primaryBorderColor: v("--green"),
+      lineColor: v("--muted"), secondaryColor: v("--card"), tertiaryColor: v("--card"),
+      background: v("--panel"), edgeLabelBackground: v("--panel"), textColor: v("--text")
+    }
+  });
+})();
+</script>
+</body>
+</html>

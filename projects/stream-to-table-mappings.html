@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stream-to-Table Mapping Generator | Prashant Jalan</title>
+<meta name="description" content="The catalog needed about 100,000 mappings that no one could build by hand. I generated and verified them, and flagged thousands of existing errors.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,700;0,800;1,500&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Caveat:wght@600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="site-name" href="/">Prashant Jalan<span>Business Data Analyst</span></a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="/projects.html" aria-current="page">Work</a>
+      <a href="/dashboard.html">Dashboard</a>
+      <a href="/cooking.html">Cooking</a>
+      <a href="/about.html">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="page-head narrow">
+    <p class="crumb"><a href="/projects.html#ai-projects">All Projects</a></p>
+    <h1>Stream-to-Table Mapping Generator</h1>
+    <p class="intro">The catalog needed about 100,000 mappings that no one could build by hand. I generated and verified them, and flagged thousands of existing errors.</p>
+    <ul class="chips"><li>Python</li><li>polars/pandas</li><li>Protobuf metadata</li><li>Ingestion YAML</li><li>Excel output</li></ul>
+  </div>
+  <article class="card story narrow">
+<h2>The Problem</h2>
+<p>Event streams (Kafka topics carrying protobuf messages) land in a lakehouse across several layers: raw, staging and end-of-day/start-of-day snapshots. The data catalog needed field-to-column mappings between every stream and its tables, about 100,000 of them, and no one could build that by hand.</p>
+<h2>What I Built</h2>
+<p>A one-command pipeline that generates and verifies the mappings:</p>
+<ol>
+<li>Extracts the current stream and table inventory.</li>
+<li>Reads the ingestion configuration to learn which layers each topic actually lands in.</li>
+<li>Generates mappings at four levels: topic, schema, event and field.</li>
+<li>Runs a reconciliation pass to recover field mappings the generator missed. Every recovered mapping is checked against the live table catalog.</li>
+<li>Writes a workbook with one tab per level, plus a list of existing catalog relations that should be removed.</li>
+</ol>
+<figure class="diagram"><pre class="mermaid">
+flowchart LR
+  I[Stream + table inventory] --&gt; G[Generator]
+  Y[Ingestion YAML&lt;br/&gt;layer rules] --&gt; G
+  G --&gt; R[Reconcile &amp; verify&lt;br/&gt;vs live catalog]
+  R --&gt; O[Verified mappings&lt;br/&gt;Topic · Schema · Event · Field]
+  R --&gt; X[Relations to remove]
+</pre></figure>
+<h2>Why This Approach</h2>
+<p>Zero guessing. An early version broke ties heuristically, and an audit showed this created cross-domain misattributions (for example, an unanchored suffix match tied one topic to another&rsquo;s table). Each heuristic was replaced with an exact rule, such as &ldquo;the proto package must match&rdquo; or &ldquo;only map to layers the ingestion config ingests&rdquo;. Every change was diffed against the previous baseline.</p>
+<h2>Outcomes</h2>
+<div class="outcomes"><ul>
+<li>About 120,000 verified mappings across all levels. Every row in the deliverable is a confirmed match.</li>
+<li>Found thousands of incorrect relations already in the catalog and produced a removal list.</li>
+<li>Versioned releases with a changelog, so each count change can be explained.</li>
+</ul></div>
+<h2>Lessons</h2>
+<p>Baseline diffs are the best regression test for a data pipeline. If a count moves, you should be able to say exactly why.</p>
+  </article>
+  <nav class="pager narrow" aria-label="More projects">
+    <a href="/projects/versioned-data-catalog-warehouse.html"><span>Previous Project</span><strong>Versioned Data Catalog Warehouse</strong></a>
+    <a class="next" href="/projects/schema-drift-detection.html"><span>Next Project</span><strong>Schema-vs-Catalog Drift Detection</strong></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="card">
+      <div>
+        <h2>Let’s Talk</h2>
+        <p>I’m open to client-facing analyst roles, and always glad to talk about data, AI or food.</p>
+      </div>
+      <a class="btn" href="https://www.linkedin.com/in/prashantjalan8">Message me on LinkedIn</a>
+    </div>
+  </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script>
+(function () {
+  var s = getComputedStyle(document.documentElement);
+  function v(n) { return s.getPropertyValue(n).trim(); }
+  mermaid.initialize({
+    startOnLoad: true, theme: "base", securityLevel: "strict",
+    flowchart: { curve: "basis", useMaxWidth: true, padding: 14 },
+    themeVariables: {
+      fontFamily: '"Alegreya Sans", Arial, sans-serif', fontSize: "17px",
+      primaryColor: v("--card"), primaryTextColor: v("--ink"), primaryBorderColor: v("--green"),
+      lineColor: v("--muted"), secondaryColor: v("--card"), tertiaryColor: v("--card"),
+      background: v("--panel"), edgeLabelBackground: v("--panel"), textColor: v("--text")
+    }
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reliable AI-Agent Workspace | Prashant Jalan</title>
+<meta name="description" content="AI agents made confident mistakes and ran up costs. I set up the rules, tools and checks that made them dependable enough for real deliverables.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,700;0,800;1,500&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Caveat:wght@600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="site-name" href="/">Prashant Jalan<span>Business Data Analyst</span></a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="/projects.html" aria-current="page">Work</a>
+      <a href="/dashboard.html">Dashboard</a>
+      <a href="/cooking.html">Cooking</a>
+      <a href="/about.html">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="page-head narrow">
+    <p class="crumb"><a href="/projects.html#ai-projects">All Projects</a></p>
+    <h1>Engineering a Reliable AI-Agent Workspace</h1>
+    <p class="intro">AI agents made confident mistakes and ran up costs. I set up the rules, tools and checks that made them dependable enough for real deliverables.</p>
+    <ul class="chips"><li>Claude Code</li><li>Modular rules</li><li>Skills</li><li>Evals</li><li>Git hooks</li><li>REST tooling</li></ul>
+  </div>
+  <article class="card story narrow">
+<h2>The Problem</h2>
+<p>LLM coding agents are powerful, but on enterprise analysis work they fail in predictable ways. They fabricate plausible names, burn tokens re-reading files, spawn expensive sub-agents for simple lookups, and lose work that was never committed. Early on, a couple of days of unconstrained usage cost hundreds of dollars.</p>
+<h2>What I Built</h2>
+<p>A workspace that treats the agent like a team member with an operating manual:</p>
+<ul>
+<li><strong>Modular rules</strong>: a short core policy file plus path-activated rule files that load only when work touches a given system, which keeps context small.</li>
+<li><strong>Skills</strong>: packaged, versioned procedures (lineage extraction, DQ rules, mapping-spec verification, Excel styling) with a registration and audit checklist.</li>
+<li><strong>Tooling over brute force</strong>: agents query a code-search API and a catalog database instead of grepping raw files.</li>
+<li><strong>Guardrails</strong>: banned destructive commands, sub-agents only with explicit approval, commit after every completed task, and pre-commit hooks that block work outside the workspace.</li>
+<li><strong>Evals for every change</strong>: invariant checks with planted-violation self-tests and one-time mutation tests.</li>
+<li><strong>Persistent memory</strong>: small, linked memory files that record decisions and corrections so they carry across sessions.</li>
+</ul>
+<figure class="diagram"><pre class="mermaid">
+flowchart TB
+  U[Engineer] --&gt; A[AI agent]
+  A --&gt; R[Core + path-scoped rules]
+  A --&gt; S[Skills]
+  A --&gt; T[Code-search API · catalog DB]
+  A --&gt; E[Evals + QA gate]
+  E --&gt; G[Commit hooks · git]
+  A &lt;--&gt; M[Memory]
+</pre></figure>
+<h2>Why This Approach</h2>
+<p>Every rule came from a real incident: lost files, a runaway sub-agent, a fabricated mapping. Writing the lesson down where the agent will read it is the cheapest way to make sure it never happens again.</p>
+<h2>Outcomes</h2>
+<div class="outcomes"><ul>
+<li>Big cut in token waste, through anti-duplication rules and API-first search.</li>
+<li>Repeatable, auditable deliverables, because every change ships with evals and every claim with evidence.</li>
+<li>A disaster-recovery path: two commands restore the workspace and 150+ repository clones.</li>
+</ul></div>
+<h2>Lessons</h2>
+<p>Reliability with AI agents is mostly an environment-design problem: clear rules, good tools, fast checks.</p>
+  </article>
+  <nav class="pager narrow" aria-label="More projects">
+    <a href="/projects/code-knowledge-engine.html"><span>Previous Project</span><strong>Code Knowledge Engine</strong></a>
+    <a class="next" href="/projects/sql-migration-tool.html"><span>Next Project</span><strong>Legacy-to-Modern SQL Migration Tool</strong></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="card">
+      <div>
+        <h2>Let’s Talk</h2>
+        <p>I’m open to client-facing analyst roles, and always glad to talk about data, AI or food.</p>
+      </div>
+      <a class="btn" href="https://www.linkedin.com/in/prashantjalan8">Message me on LinkedIn</a>
+    </div>
+  </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script>
+(function () {
+  var s = getComputedStyle(document.documentElement);
+  function v(n) { return s.getPropertyValue(n).trim(); }
+  mermaid.initialize({
+    startOnLoad: true, theme: "base", securityLevel: "strict",
+    flowchart: { curve: "basis", useMaxWidth: true, padding: 14 },
+    themeVariables: {
+      fontFamily: '"Alegreya Sans", Arial, sans-serif', fontSize: "17px",
+      primaryColor: v("--card"), primaryTextColor: v("--ink"), primaryBorderColor: v("--green"),
+      lineColor: v("--muted"), secondaryColor: v("--card"), tertiaryColor: v("--card"),
+      background: v("--panel"), edgeLabelBackground: v("--panel"), textColor: v("--text")
+    }
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Automated Data Lineage from Source Code | Prashant Jalan</title>
+<meta name="description" content="Regulators and data owners needed to know where critical data comes from, but the documentation was manual and out of date. I automated the answer by reading the code itself.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,700;0,800;1,500&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Caveat:wght@600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="site-name" href="/">Prashant Jalan<span>Business Data Analyst</span></a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="/projects.html" aria-current="page">Work</a>
+      <a href="/dashboard.html">Dashboard</a>
+      <a href="/cooking.html">Cooking</a>
+      <a href="/about.html">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="page-head narrow">
+    <p class="crumb"><a href="/projects.html#ai-projects">All Projects</a></p>
+    <h1>Automated Data Lineage from Source Code</h1>
+    <p class="intro">Regulators and data owners needed to know where critical data comes from, but the documentation was manual and out of date. I automated the answer by reading the code itself.</p>
+    <ul class="chips"><li>Python</li><li>Static analysis</li><li>Protobuf parsing</li><li>Config resolution</li><li>Benchmark harness</li></ul>
+  </div>
+  <article class="card story narrow">
+<h2>The Problem</h2>
+<p>Regulators and data owners need to know where every critical data element comes from. The existing lineage documentation was maintained by hand, incomplete, and often out of date compared with the code. The platform spans dozens of streaming jobs, event-driven services and REST APIs.</p>
+<h2>What I Built</h2>
+<p>A lineage extraction framework that reads the code itself:</p>
+<ul>
+<li><strong>Topic-level lineage</strong>: per-framework extractors (streaming-job configs, Spring listeners, registry files, ingestion YAML) resolve producer → topic → consumer edges. Results are joined into one scored graph, with a provenance tag on every edge.</li>
+<li><strong>Field-level lineage</strong>: for selected systems, traces each target field back through mappers and converters to a real source. A real source is a stream field, a database column, a config row, an inbound API or a file, and never an in-memory object.</li>
+<li><strong>Benchmark harness</strong>: scores precision and recall against a hand-curated &ldquo;gold&rdquo; register and classifies every gap by cause.</li>
+<li><strong>Drift report</strong>: a two-sided diff of code versus documentation.</li>
+</ul>
+<figure class="diagram"><pre class="mermaid">
+flowchart LR
+  C[Repos: configs, listeners,&lt;br/&gt;registries, ingestion YAML] --&gt; X[Per-idiom extractors]
+  X --&gt; G[Assembled topic graph&lt;br/&gt;with provenance]
+  G --&gt; B[Benchmark vs gold&lt;br/&gt;P/R + gap causes]
+  G --&gt; D[Drift report]
+</pre></figure>
+<h2>Why This Approach</h2>
+<p>I measured before deciding. Field-level tracing through a 7-hop streaming pipeline compounds error (95% per hop gives about 70% end to end), so I parked automated field extraction for those jobs and focused on topic-level lineage, where accuracy is high.</p>
+<h2>Outcomes</h2>
+<div class="outcomes"><ul>
+<li>Topic inventory recall of about <strong>97%</strong>. Producer-to-consumer edges reached <strong>about 94% recall at about 97% precision</strong> in the deliverable tier.</li>
+<li>The drift report found code-only and documentation-only topics that manual review had missed.</li>
+<li>The no-fabrication rules were later packaged as reusable skills for AI agents.</li>
+</ul></div>
+<h2>Lessons</h2>
+<p>Benchmark against ground truth early. The scorecard, not intuition, decided where to invest.</p>
+  </article>
+  <nav class="pager narrow" aria-label="More projects">
+    <span></span>
+    <a class="next" href="/projects/lineage-qa-agent.html"><span>Next Project</span><strong>Lineage QA Verification Agent</strong></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="card">
+      <div>
+        <h2>Let’s Talk</h2>
+        <p>I’m open to client-facing analyst roles, and always glad to talk about data, AI or food.</p>
+      </div>
+      <a class="btn" href="https://www.linkedin.com/in/prashantjalan8">Message me on LinkedIn</a>
+    </div>
+  </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script>
+(function () {
+  var s = getComputedStyle(document.documentElement);
+  function v(n) { return s.getPropertyValue(n).trim(); }
+  mermaid.initialize({
+    startOnLoad: true, theme: "base", securityLevel: "strict",
+    flowchart: { curve: "basis", useMaxWidth: true, padding: 14 },
+    themeVariables: {
+      fontFamily: '"Alegreya Sans", Arial, sans-serif', fontSize: "17px",
+      primaryColor: v("--card"), primaryTextColor: v("--ink"), primaryBorderColor: v("--green"),
+      lineColor: v("--muted"), secondaryColor: v("--card"), tertiaryColor: v("--card"),
+      background: v("--panel"), edgeLabelBackground: v("--panel"), textColor: v("--text")
+    }
+  });
+})();
+</script>
+</body>
+</html>

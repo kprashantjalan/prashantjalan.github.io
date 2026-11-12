@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Business-Glossary Term Assignment | Prashant Jalan</title>
+<meta name="description" content="Tens of thousands of fields had no business terms, and manual tagging was inconsistent. I built an explainable way to assign them, with data stewards kept in the loop.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,700;0,800;1,500&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Caveat:wght@600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="site-name" href="/">Prashant Jalan<span>Business Data Analyst</span></a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="/projects.html" aria-current="page">Work</a>
+      <a href="/dashboard.html">Dashboard</a>
+      <a href="/cooking.html">Cooking</a>
+      <a href="/about.html">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="page-head narrow">
+    <p class="crumb"><a href="/projects.html#ai-projects">All Projects</a></p>
+    <h1>Automated Business-Glossary Term Assignment</h1>
+    <p class="intro">Tens of thousands of fields had no business terms, and manual tagging was inconsistent. I built an explainable way to assign them, with data stewards kept in the loop.</p>
+    <ul class="chips"><li>Python</li><li>scikit-learn (TF-IDF)</li><li>pandas</li><li>Excel output</li></ul>
+  </div>
+  <article class="card story narrow">
+<h2>The Problem</h2>
+<p>A data catalog is only useful if fields are tagged with business terms from the governed glossary. Tens of thousands of fields from legacy and modern platforms had no terms. Manual tagging would have taken months, and different people tagging the same field gave inconsistent answers.</p>
+<h2>What I Built</h2>
+<p>A multi-signal scoring pipeline that assigns a business term to each field and attaches a confidence tier:</p>
+<ol>
+<li><strong>Semantic grouping</strong>: rows are grouped by field name plus normalized description, so the same field with the same meaning always gets the same term.</li>
+<li><strong>Evidence collection</strong>: bridge mappings from already-tagged systems, direct name matches, and exact token matches against term names.</li>
+<li><strong>TF-IDF similarity</strong>: compares each field against a corpus built from term names, definitions, domains and example assets.</li>
+<li><strong>Scoring</strong>: TF-IDF is the primary signal. The other signals can only <em>confirm</em> a candidate, never override it.</li>
+<li><strong>Verification and output</strong>: consistency checks, phantom-term detection, polysemantic warnings, and a workbook with assignments, a summary and a needs-review sheet.</li>
+</ol>
+<figure class="diagram"><pre class="mermaid">
+flowchart LR
+  F[Untagged fields] --&gt; G[Semantic groups]
+  T[Glossary terms] --&gt; V[TF-IDF model]
+  B[Bridge mappings /&lt;br/&gt;existing tags] --&gt; E[Evidence]
+  G --&gt; V &amp; E
+  V &amp; E --&gt; S[Multi-signal score]
+  S --&gt; O[Assignments + confidence&lt;br/&gt;+ needs-review]
+</pre></figure>
+<h2>Why This Approach</h2>
+<p>Explainable beats opaque here. Data stewards need to see <em>why</em> a term was chosen. TF-IDF with transparent boosts gives a traceable score, and the needs-review sheet sends uncertain cases to people instead of hiding them.</p>
+<h2>Outcomes</h2>
+<div class="outcomes"><ul>
+<li>Bulk-tagged a large legacy estate in hours instead of months, with high-confidence assignments ready for steward sign-off.</li>
+<li>Through four iterations, I recorded 11 concrete bugs and their fixes. One example: noisy bridge columns that mapped to 5+ terms had been outvoting real evidence.</li>
+<li>Packaged as a reusable skill, so the method and its lessons apply to any new platform.</li>
+</ul></div>
+<h2>Lessons</h2>
+<p>Grouping by meaning before scoring was the biggest quality jump. Consistency is a feature stewards notice right away.</p>
+  </article>
+  <nav class="pager narrow" aria-label="More projects">
+    <a href="/projects/schema-drift-detection.html"><span>Previous Project</span><strong>Schema-vs-Catalog Drift Detection</strong></a>
+    <a class="next" href="/projects/code-knowledge-engine.html"><span>Next Project</span><strong>Code Knowledge Engine</strong></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="card">
+      <div>
+        <h2>Let’s Talk</h2>
+        <p>I’m open to client-facing analyst roles, and always glad to talk about data, AI or food.</p>
+      </div>
+      <a class="btn" href="https://www.linkedin.com/in/prashantjalan8">Message me on LinkedIn</a>
+    </div>
+  </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script>
+(function () {
+  var s = getComputedStyle(document.documentElement);
+  function v(n) { return s.getPropertyValue(n).trim(); }
+  mermaid.initialize({
+    startOnLoad: true, theme: "base", securityLevel: "strict",
+    flowchart: { curve: "basis", useMaxWidth: true, padding: 14 },
+    themeVariables: {
+      fontFamily: '"Alegreya Sans", Arial, sans-serif', fontSize: "17px",
+      primaryColor: v("--card"), primaryTextColor: v("--ink"), primaryBorderColor: v("--green"),
+      lineColor: v("--muted"), secondaryColor: v("--card"), tertiaryColor: v("--card"),
+      background: v("--panel"), edgeLabelBackground: v("--panel"), textColor: v("--text")
+    }
+  });
+})();
+</script>
+</body>
+</html>
